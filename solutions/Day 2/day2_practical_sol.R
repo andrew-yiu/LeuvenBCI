@@ -245,3 +245,22 @@ lines(density(bart_samp_clev), col = "blue", xpd = FALSE)
 abline(v = diff_means, lty = "dashed", xpd = FALSE)
 legend(5000, y= 0.0003, legend=c("BART clever OR", "BART clever + 1step", "Diff. means"),
        col=c("blue", "red", "black"), lty = c(1,1,2), cex=0.8)
+
+##########################################
+### Bonus: estimating the ATT with grf ###
+##########################################
+
+library(grf)
+## fit causal forest
+cau_for <- causal_forest(X = ldw_psid[,c(covar)], Y = ldw_psid[,Y], W = ldw_psid[,treat])
+
+## compute AIPW estimates
+grf_att_aipw <- average_treatment_effect(cau_for, target.sample = c("treated"))
+print(paste0("GRF AIPW estimate for the ATT: $", grf_att_aipw[1]))
+print(paste0("GRF AIPW 95% confidence interval for the ATT: ($", grf_att_aipw[1] - 1.96*grf_att_aipw[2], ", $", grf_att_aipw[1] + 1.96*grf_att_aipw[2], ")"))
+
+## compute TMLE estimates
+grf_att_tmle <- average_treatment_effect(cau_for, target.sample = c("treated"), method = "TMLE")
+print(paste0("GRF TMLE estimate for the ATT: $", grf_att_tmle[1]))
+print(paste0("GRF TMLE 95% confidence interval for the ATT: ($", grf_att_tmle[1] - 1.96*grf_att_tmle[2], ", $", grf_att_tmle[1] + 1.96*grf_att_tmle[2], ")"))
+
