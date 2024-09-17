@@ -45,7 +45,7 @@ y1_vec <- y*t + (y + beta)*(1-t)
 y0_vec <- y*(1-t) + (y - beta)*t
 
 rep <- 100000 # increased no. of repetitions to add precision
-n <- length(lalonde$treat)
+n <- length(ldw$treat)
 est_vec_bet <- numeric(rep) 
 for (r in 1:rep) {
   t_vec <- rbinom(n,1,prob=0.5)
